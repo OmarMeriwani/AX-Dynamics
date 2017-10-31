@@ -26,62 +26,14 @@ public class Class1
             WORKFLOWTABLE _WORKFLOWTABLE;
             WORKFLOWVERSIONTABLE _WORKFLOWVERSIONTABLE;
             HcmWorker _HcmWorker;
-            PurchRFQCaseTable _purchRFQCaseTable;
-            PurchRFQLine _PurchRFQLine;
-            purchRFQTable _purchRFQTable;
+            PurchRFQCaseTable purchRFQCaseTable;
             ;
 # avifiles
 
             startLengthyOperation();
             delete_from TmpList;
-            _WORKFLOWVERSIONTABLE JOIN * from
-                       _WORKFLOWTRACKINGSTATUSTABLE  where _WORKFLOWTRACKINGSTATUSTABLE.WORKFLOWVERSIONTABLE == _WORKFLOWVERSIONTABLE.recId
-                         JOIN firstonly user from
-                         _WORKFLOWTRACKINGTABLE
-                        order by CreatedDateTime desc
-                        where _WORKFLOWTRACKINGTABLE.WORKFLOWTRACKINGSTATUSTABLE == _WORKFLOWTRACKINGSTATUSTABLE.RECID
-                        JOIN* from
-                         _WORKFLOWTABLE where  _WORKFLOWTABLE.recid == _WORKFLOWVERSIONTABLE.WORKFLOWTABLE
-                         JOIN* from
-                         _Purchreqtable where _Purchreqtable.recid == _WORKFLOWTRACKINGSTATUSTABLE.CONTEXTRECID
-                        JOIN* from
-                        _purchRFQCaseTable where _Purchreqtable.RFQCaseId = _purchRFQCaseTable.RFQCaseId
-                        JOIN* from
-                        _purchRFQTable where _purchRFQTable.RFQCaseId = _purchRFQCaseTable.RFQCaseId
-                        JOIN* from
-                        _PurchRFQLine where _PurchRFQLine.RFQId = _purchRFQTable.RFQId
-                        JOIN* from
-                         _HcmWorker where _HcmWorker.recid == _Purchreqtable.ORIGINATOR
-                         JOIN* from
-                         _DIRPARTYTABLE where  _DIRPARTYTABLE.recid == _HcmWorker.PERSON
-                        && _WORKFLOWTABLE.TEMPLATENAME == 'PurchReqReview'
-            {
 
-                info(_WORKFLOWTRACKINGTABLE.User);
-                TmpList.purchReqId = _Purchreqtable.PurchReqId;
-                TmpList.purchReqName = _Purchreqtable.purchReqName;
-                TmpList.PurchId = _Purchreqtable.PurchId();
-                TmpList.RFQCaseId = _Purchreqtable.RFQCaseId();
-                // TmpList.Reason = resultSet.getString(5);
-                TmpList.Originator = _DIRPARTYTABLE.Name;
-                //     TmpList.createdDate =  _Purchreqtable.createdDate();
-                //     TmpList.WorkflowStatus =  _WORKFLOWTRACKINGSTATUSTABLE.TrackingStatus;
-                // TmpList.ReqStatus =  resultSet.getString(9);
-                TmpList.Currency = _Purchreqtable.Currency();
-                TmpList.Discount = _Purchreqtable.Discount() * TmpList.QTY;
-                TmpList.TotalAmount = _Purchreqtable.SumAmount();
-                TmpList.LastActionTime = _WORKFLOWTRACKINGSTATUSTABLE.createdDateTime;
-
-                TmpList.QTY = _PurchRFQLine.QTYOrdered;
-                //  TmpList     _WORKFLOWTRACKINGSTATUSTABLE.user
-                TmpList.insert();
-
-            }
-
-
-            Datasource1_ds.executeQuery();
-            Datasource1_ds.refresh();
-         
+        
             simpleProgress = SysOperationProgress::newGeneral(#aviUpdate, 'Extracting PR List',100);
             _PRList = new PRList();
             R = _PRList.getPRList();
@@ -118,7 +70,6 @@ public class Class1
                 {
                     TmpList.PurchStatus = PurchTable::find(TmpList.PurchId).PurchStatus;
                 }
-                TmpList.QTY = R.getString(18);
                 TmpList.insert();
                 i++;
                 simpleProgress.incCount();
