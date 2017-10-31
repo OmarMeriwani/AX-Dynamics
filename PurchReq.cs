@@ -4,7 +4,7 @@ public class Class1
 {
 	public Class1()
 	{
-        void setData()
+        public void setData()
         {
             SysOperationProgress simpleProgress;
             str sql;
@@ -26,23 +26,31 @@ public class Class1
             WORKFLOWTABLE _WORKFLOWTABLE;
             WORKFLOWVERSIONTABLE _WORKFLOWVERSIONTABLE;
             HcmWorker _HcmWorker;
-            PurchRFQCaseTable purchRFQCaseTable;
+            PurchRFQCaseTable _purchRFQCaseTable;
+            PurchRFQLine _PurchRFQLine;
+            purchRFQTable _purchRFQTable;
             ;
 # avifiles
 
             startLengthyOperation();
             delete_from TmpList;
-            _WORKFLOWVERSIONTABLE JOIN *from
+            _WORKFLOWVERSIONTABLE JOIN * from
                        _WORKFLOWTRACKINGSTATUSTABLE  where _WORKFLOWTRACKINGSTATUSTABLE.WORKFLOWVERSIONTABLE == _WORKFLOWVERSIONTABLE.recId
                          JOIN firstonly user from
                          _WORKFLOWTRACKINGTABLE
                         order by CreatedDateTime desc
                         where _WORKFLOWTRACKINGTABLE.WORKFLOWTRACKINGSTATUSTABLE == _WORKFLOWTRACKINGSTATUSTABLE.RECID
-            JOIN* from
+                        JOIN* from
                          _WORKFLOWTABLE where  _WORKFLOWTABLE.recid == _WORKFLOWVERSIONTABLE.WORKFLOWTABLE
                          JOIN* from
                          _Purchreqtable where _Purchreqtable.recid == _WORKFLOWTRACKINGSTATUSTABLE.CONTEXTRECID
-                         JOIN* from
+                        JOIN* from
+                        _purchRFQCaseTable where _Purchreqtable.RFQCaseId = _purchRFQCaseTable.RFQCaseId
+                        JOIN* from
+                        _purchRFQTable where _purchRFQTable.RFQCaseId = _purchRFQCaseTable.RFQCaseId
+                        JOIN* from
+                        _PurchRFQLine where _PurchRFQLine.RFQId = _purchRFQTable.RFQId
+                        JOIN* from
                          _HcmWorker where _HcmWorker.recid == _Purchreqtable.ORIGINATOR
                          JOIN* from
                          _DIRPARTYTABLE where  _DIRPARTYTABLE.recid == _HcmWorker.PERSON
@@ -54,6 +62,7 @@ public class Class1
                 TmpList.purchReqName = _Purchreqtable.purchReqName;
                 TmpList.PurchId = _Purchreqtable.PurchId();
                 TmpList.RFQCaseId = _Purchreqtable.RFQCaseId();
+                TmpList.QTY = _PurchRFQLine.QTYOrdered
                 // TmpList.Reason = resultSet.getString(5);
                 TmpList.Originator = _DIRPARTYTABLE.Name;
                 //     TmpList.createdDate =  _Purchreqtable.createdDate();
@@ -74,7 +83,7 @@ public class Class1
             */
          
             simpleProgress = SysOperationProgress::newGeneral(#aviUpdate, 'Extracting PR List',100);
-_PRList = new PRList();
+            _PRList = new PRList();
             R = _PRList.getPRList();
             while (R.next())
             {
