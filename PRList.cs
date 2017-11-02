@@ -27,8 +27,10 @@ public class Class1
             WORKFLOWVERSIONTABLE _WORKFLOWVERSIONTABLE;
             HcmWorker _HcmWorker;
             PurchRFQCaseTable purchRFQCaseTable;
+            PurchRFQLine _PurchRFQLine;
+            purchRFQTable _purchRFQTable;
             ;
-# avifiles
+#avifiles
 
             startLengthyOperation();
             delete_from TmpList;
@@ -70,6 +72,7 @@ public class Class1
                 {
                     TmpList.PurchStatus = PurchTable::find(TmpList.PurchId).PurchStatus;
                 }
+                _purchRFQTable = purchRFQTable::find(purchRFQCaseTable.RFQCaseId);
                 TmpList.insert();
                 i++;
                 simpleProgress.incCount();
